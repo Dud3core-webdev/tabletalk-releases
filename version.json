@@ -5,7 +5,7 @@
     "platforms":  {
                       "windows":  {
                                       "url":  "windows/TableTalk_Windows_v1.0.0.zip",
-                                      "sha256":  "ca688704b1837ccda0b49cfd9b314ebb8bc8aa592c152910bfa53570fa5eb004",
+                                      "sha256":  "30c21b7e16063278d0fdc2ad29914f10cd93ea2f43f8e0b9fbc57417923aac7b",
                                       "minOsVersion":  "10.0.17763"
                                   },
                       "macos":  {
