@@ -4,8 +4,8 @@
     "releaseNotes":  "Production v1.0.0 release with Angular Showcase site and .NET 10 backend.",
     "platforms":  {
                       "windows":  {
-                                      "url":  "windows/TableTalk_Windows_v1.0.1.zip",
-                                      "sha256":  "efc2325cfb4c4843665442f36d664213e7dbb6086a6c234e9016d1d043610135",
+                                      "url":  "windows/v1.0.1/TableTalk_Windows_v1.0.1.zip",
+                                      "sha256":  "49f674f356dd07576f2d36134dc875c1ab2afb785f5b0eef219efc1884a25272",
                                       "minOsVersion":  "10.0.17763"
                                   },
                       "macos":  {
