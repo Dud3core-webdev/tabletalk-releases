@@ -1,0 +1,22 @@
+﻿{
+    "version":  "1.0.0",
+    "releaseDate":  "2026-09-06",
+    "releaseNotes":  "Production v1.0.0 release with Angular Showcase site and .NET 10 backend.",
+    "platforms":  {
+                      "windows":  {
+                                      "url":  "windows/TableTalk_Windows_v1.0.0.zip",
+                                      "sha256":  "",
+                                      "minOsVersion":  "10.0.17763"
+                                  },
+                      "macos":  {
+                                    "url":  "macos/TableTalk_v1.0.0.dmg",
+                                    "sha256":  "",
+                                    "minOsVersion":  "12.0"
+                                },
+                      "linux":  {
+                                    "url":  "linux/TableTalk_Linux_v1.0.0.tar.gz",
+                                    "sha256":  "",
+                                    "minOsVersion":  "22.04"
+                                }
+                  }
+}
