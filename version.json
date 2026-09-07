@@ -5,7 +5,7 @@
     "platforms":  {
                       "windows":  {
                                       "url":  "https://dud3core-webdev.github.io/tabletalk-releases/windows/v1.0.5/TableTalk_Windows_v1.0.5.zip",
-                                      "sha256":  "917f11914788f3a55379bf063eba8fa267b626e73e330567712b07e01818c5af",
+                                      "sha256":  "c2ca41787354de78fa7788fd9e62ea5d3b3c6efc3e9a39bc93324907ecad7bbb",
                                       "minOsVersion":  "10.0.17763"
                                   },
                       "macos":  {
