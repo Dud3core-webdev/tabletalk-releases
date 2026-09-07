@@ -1,11 +1,11 @@
 ﻿{
-    "version":  "1.0.4",
-    "releaseDate":  "2026-09-06",
+    "version":  "1.0.5",
+    "releaseDate":  "2026-09-07",
     "releaseNotes":  "Production v1.0.0 release with Angular Showcase site and .NET 10 backend.",
     "platforms":  {
                       "windows":  {
-                                      "url":  "https://dud3core-webdev.github.io/tabletalk-releases/windows/v1.0.4/TableTalk_Windows_v1.0.4.zip",
-                                      "sha256":  "29c2a148d4f7457c38b018ba7b7393836cd6e540c70af0ab6848e51bc59239f6",
+                                      "url":  "https://dud3core-webdev.github.io/tabletalk-releases/windows/v1.0.5/TableTalk_Windows_v1.0.5.zip",
+                                      "sha256":  "917f11914788f3a55379bf063eba8fa267b626e73e330567712b07e01818c5af",
                                       "minOsVersion":  "10.0.17763"
                                   },
                       "macos":  {
