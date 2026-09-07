@@ -1,22 +1,22 @@
-﻿{
-    "version":  "1.0.0",
-    "releaseDate":  "2026-09-06",
-    "releaseNotes":  "Production v1.0.0 release with Angular Showcase site and .NET 10 backend.",
-    "platforms":  {
-                      "windows":  {
-                                      "url":  "windows/TableTalk_Windows_v1.0.0.zip",
-                                      "sha256":  "30c21b7e16063278d0fdc2ad29914f10cd93ea2f43f8e0b9fbc57417923aac7b",
-                                      "minOsVersion":  "10.0.17763"
-                                  },
-                      "macos":  {
-                                    "url":  "macos/TableTalk_v1.0.0.dmg",
-                                    "sha256":  "",
-                                    "minOsVersion":  "12.0"
-                                },
-                      "linux":  {
-                                    "url":  "linux/TableTalk_Linux_v1.0.0.tar.gz",
-                                    "sha256":  "",
-                                    "minOsVersion":  "22.04"
-                                }
-                  }
+{
+  "version": "1.0.3",
+  "releaseDate": "2026-09-06",
+  "releaseNotes": "v1.0.3: Fixed checkout URL launching browser instead of file explorer. Auto-update now extracts .zip in-place and restarts. Version display now reads real installed version via package_info_plus.",
+  "platforms": {
+    "windows": {
+      "url": "https://dud3core-webdev.github.io/tabletalk-releases/windows/v1.0.3/TableTalk_Windows_v1.0.3.zip",
+      "sha256": "2f55e5d6440d0e7c1999106d773d4eed210e00bc45c2c7ca43df103fa30ecc85",
+      "minOsVersion": "10.0.17763"
+    },
+    "macos": {
+      "url": "",
+      "sha256": "",
+      "minOsVersion": "12.0"
+    },
+    "linux": {
+      "url": "",
+      "sha256": "",
+      "minOsVersion": "22.04"
+    }
+  }
 }
