@@ -1,10 +1,10 @@
 {
-    "version": "1.1.4",
-    "releaseDate": "2026-09-08",
-    "releaseNotes": "Automated release v1.1.3 with professional Inno Setup Windows installer.",
+    "version": "1.2.0",
+    "releaseDate": "2026-09-12",
+    "releaseNotes": "TableTalk v1.2.0: TTQL Worksheets, SQL Query Profiler Split View, and Database Connection Pooling.",
     "platforms": {
         "windows": {
-            "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.1.3/TableTalkSetup.exe",
+            "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.0/TableTalkSetup.exe",
             "sha256": "",
             "minOsVersion": "10.0.17763"
         },
