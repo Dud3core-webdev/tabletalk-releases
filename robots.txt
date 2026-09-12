@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dud3core-webdev.github.io/tabletalk-releases/sitemap.xml
