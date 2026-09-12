@@ -1,22 +1,24 @@
-﻿{
-    "version":  "1.2.0",
-    "releaseDate":  "2026-09-12",
-    "releaseNotes":  "TableTalk v1.2.0: TTQL Worksheets, SQL Query Profiler Split View, and Database Connection Pooling.",
-    "platforms":  {
-                      "windows":  {
-                                      "url":  "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.0/TableTalkSetup.exe",
-                                      "sha256":  "",
-                                      "minOsVersion":  "10.0.17763"
-                                  },
-                      "macos":  {
-                                    "url":  "macos/TableTalk_v1.0.0.dmg",
-                                    "sha256":  "",
-                                    "minOsVersion":  "12.0"
-                                },
-                      "linux":  {
-                                    "url":  "linux/TableTalk_Linux_v1.0.0.tar.gz",
-                                    "sha256":  "",
-                                    "minOsVersion":  "22.04"
-                                }
-                  }
+{
+  "version": "1.2.4",
+  "releaseDate": "2026-09-12",
+  "releaseNotes": "Added support for Linux early\n    - Already had infrastructure - I just needed to test the Linux build on a proper Linux machine.",
+  "sha256": "e803259e782d1b7fa7286080e663bb56354096de8d58c3a6f3740087f1e32877",
+  "downloadUrl": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.4/TableTalkSetup.exe",
+  "platforms": {
+    "windows": {
+      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.4/TableTalkSetup.exe",
+      "sha256": "e803259e782d1b7fa7286080e663bb56354096de8d58c3a6f3740087f1e32877",
+      "minOsVersion": "10.0.17763"
+    },
+    "macos": {
+      "url": "",
+      "sha256": "",
+      "minOsVersion": "12.0"
+    },
+    "linux": {
+      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.4/TableTalk_Linux_v1.2.4.tar.gz",
+      "sha256": "e9dceb8b5496e4e5c4d7c2e6fa7b40327798e7ec6461b51c29332257ed9dfb4e",
+      "minOsVersion": "22.04"
+    }
+  }
 }
