@@ -1,22 +1,22 @@
-﻿{
-    "version":  "1.2.0",
-    "releaseDate":  "2026-09-12",
-    "releaseNotes":  "Automated release v1.1.3 with professional Inno Setup Windows installer.",
-    "platforms":  {
-                      "windows":  {
-                                      "url":  "https://dud3core-webdev.github.io/tabletalk-releases/windows/v1.2.0/TableTalk_Windows_v1.2.0.zip",
-                                      "sha256":  "957017be0cb14c462d15caedb85301a293b78e3c3d70dac09dc439f4fed13e7b",
-                                      "minOsVersion":  "10.0.17763"
-                                  },
-                      "macos":  {
-                                    "url":  "macos/TableTalk_v1.0.0.dmg",
-                                    "sha256":  "",
-                                    "minOsVersion":  "12.0"
-                                },
-                      "linux":  {
-                                    "url":  "linux/TableTalk_Linux_v1.0.0.tar.gz",
-                                    "sha256":  "",
-                                    "minOsVersion":  "22.04"
-                                }
-                  }
+{
+    "version": "1.1.4",
+    "releaseDate": "2026-09-08",
+    "releaseNotes": "Automated release v1.1.3 with professional Inno Setup Windows installer.",
+    "platforms": {
+        "windows": {
+            "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.1.3/TableTalkSetup.exe",
+            "sha256": "",
+            "minOsVersion": "10.0.17763"
+        },
+        "macos": {
+            "url": "macos/TableTalk_v1.0.0.dmg",
+            "sha256": "",
+            "minOsVersion": "12.0"
+        },
+        "linux": {
+            "url": "linux/TableTalk_Linux_v1.0.0.tar.gz",
+            "sha256": "",
+            "minOsVersion": "22.04"
+        }
+    }
 }
