@@ -1,13 +1,13 @@
 {
-  "version": "1.2.4",
-  "releaseDate": "2026-09-12",
-  "releaseNotes": "Added support for Linux early\n    - Already had infrastructure - I just needed to test the Linux build on a proper Linux machine.",
-  "sha256": "e803259e782d1b7fa7286080e663bb56354096de8d58c3a6f3740087f1e32877",
-  "downloadUrl": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.4/TableTalkSetup.exe",
+  "version": "1.2.5",
+  "releaseDate": "2026-09-14",
+  "releaseNotes": "### Security & Reliability\n- **Hardened Safe Read-Only Mode**: Fixed a bug where AI chat entity relationship analysis and query profiling could execute database DDL modifications (`CREATE INDEX`).\n- **Strict Read-Only Handle Discipline**: Removed silent defensive fallback to read-write mode in SQLite database adapter (`SqliteDbAdapter`) to enforce strict local database immutability and fail-fast exception handling.\n- **Session Read-Only Enforcement**: Added active session read-only transaction configuration for PostgreSQL (`SET default_transaction_read_only = on`) and MySQL (`SET SESSION TRANSACTION READ ONLY`).\n- **Expanded Keyword Guard**: Added DDL and mutation keywords (`INDEX`, `REINDEX`, `MERGE`, `CALL`, `RENAME`, `COMMENT`, `LOCK`, `UNLOCK`, `COPY`, `FLUSH`, `KILL`) to `SqlValidator` protection rules.\n- **Catastrophic Command Protection**: Added `SqlValidator.validateCatastrophicSql` safeguard blocking nuclear instance-destruction statements (`DROP DATABASE`, `DROP SCHEMA`, `SHUTDOWN`, `FLUSHALL`, `FLUSHDB`, `ATTACH DATABASE`) even when operating in Direct Write / YOLO Mode.",
+  "sha256": "488037d6dd0b0c97fa820688e71f91a3a1fa819718a8c928a7a11b8f7ebf5f68",
+  "downloadUrl": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.5/TableTalkSetup.exe",
   "platforms": {
     "windows": {
-      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.4/TableTalkSetup.exe",
-      "sha256": "e803259e782d1b7fa7286080e663bb56354096de8d58c3a6f3740087f1e32877",
+      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.5/TableTalkSetup.exe",
+      "sha256": "488037d6dd0b0c97fa820688e71f91a3a1fa819718a8c928a7a11b8f7ebf5f68",
       "minOsVersion": "10.0.17763"
     },
     "macos": {
@@ -16,8 +16,8 @@
       "minOsVersion": "12.0"
     },
     "linux": {
-      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.4/TableTalk_Linux_v1.2.4.tar.gz",
-      "sha256": "e9dceb8b5496e4e5c4d7c2e6fa7b40327798e7ec6461b51c29332257ed9dfb4e",
+      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.5/TableTalk_Linux_v1.2.5.tar.gz",
+      "sha256": "f34d3747130cfb768696cc0cc80d130cb11642cdfcfc40c30c3b95ea412caafd",
       "minOsVersion": "22.04"
     }
   }
