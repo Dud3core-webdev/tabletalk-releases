@@ -4,14 +4,17 @@ All notable changes, architectural milestones, and engine updates for TableTalk 
 
 ---
 
-## [v1.2.5] — Current Release
+## [v1.2.6] — Current Release
 
-### Fixed & Hardened
-- **Safe Read-Only Guardrails**: Fixed a bug where AI chat entity relationship analysis and query profiler calls could execute DDL statements (`CREATE INDEX`) on connected databases.
-- **Fail-Fast Database Handles**: Eliminated silent read-write fallbacks in SQLite handles (`SqliteDbAdapter`) to guarantee 100% database immutability in read-only mode.
-- **Session Read-Only Enforcement**: Added active session read-only transaction configuration across PostgreSQL (`SET default_transaction_read_only = on`) and MySQL (`SET SESSION TRANSACTION READ ONLY`).
-- **Expanded Lexical Guard**: Added strict keyword filters for `INDEX`, `REINDEX`, `MERGE`, `CALL`, `RENAME`, `COMMENT`, `LOCK`, `UNLOCK`, `COPY`, `FLUSH`, and `KILL`.
-- **Catastrophic Command Protection**: Added `validateCatastrophicSql` safety guard blocking nuclear instance-destruction statements (`DROP DATABASE`, `DROP SCHEMA`, `SHUTDOWN`, `FLUSHALL`, `ATTACH DATABASE`) even when running in Direct Write / YOLO Mode.
+### Added & Expanded
+- **13 Engine TTQL Poly-Store Support**: First-class TTQL query compilation and isolate execution across **SQLite, PostgreSQL, MySQL / MariaDB, MongoDB, Redis, DuckDB, Microsoft SQL Server, ClickHouse, PlanetScale, CockroachDB, YugabyteDB, Oracle Database, and Cassandra / ScyllaDB**.
+- **Automated Server Pool Import**: One-click catalog discovery and pool creation for entire database clusters (scanning `pg_database`, `information_schema.SCHEMATA`, `sys.databases`, `system.databases`, etc.).
+- **Periodic Background Schema Indexing**: Configurable background job (`AutoSchemaSyncService`) re-indexing schema metadata and synthetic foreign key graphs across active pools.
+- **Dialect-Aware TTQL Translators**: Dialect parameter binding (`$1` for PG/Cockroach/Yugabyte; `?` for SQL/MySQL/ClickHouse/MSSQL/Oracle/Cassandra), backtick quoting for MySQL/PlanetScale, and native MQL/Redis pipeline compilation.
+
+---
+
+## [v1.2.5] — Previous Release
 
 ---
 

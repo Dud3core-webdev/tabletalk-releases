@@ -1,128 +1,115 @@
-# Quick Start Guide & Production Cookbook
+# Quick Start Guide & Connection Reference
 
-A guide to writing cross-database federated queries and common query patterns with TTQL.
+TableTalk Query Language (TTQL) is a local, privacy-first functional DSL designed for cross-database analytical federation.
 
 ---
 
-## 3-Step Quick Start
+## 1. 3-Step Quick Start
 
-### Step 1: Connect Databases in TableTalk
-In the TableTalk Connection Pool, add your database instances (PostgreSQL, MySQL, SQLite, MongoDB, Redis). Credentials are saved securely inside your operating system's Credential Vault (Windows DPAPI / macOS Keychain).
+### Step 1: Add Database Connections
+In TableTalk, add your target databases or click **Import Server Pool** to discover all hosted server databases automatically. Credentials are securely encrypted inside your native OS Credential Vault (Windows DPAPI, macOS Keychain, Linux Secret Service).
 
-### Step 2: Open the TTQL Worksheet
-Press `Ctrl` + `Shift` + `T` or click **TTQL Studio** in the main navigation. The Environment Explorer on the right displays all active connection aliases.
+### Step 2: Open TTQL Studio
+Press `Ctrl` + `Shift` + `T` (or click **TTQL Studio** in the navigation bar). The **Environment Explorer** lists all active database connection aliases in `environment.connections.<alias>`.
 
 ### Step 3: Run Your Federated Query
-Write your query in the worksheet editor and press `Ctrl` + `Enter` (or `F5`). The DAG query planner compiles the execution stages, partitions concurrent requests across worker isolates, and evaluates joins in ephemeral SQLite memory.
+Write your query script in the worksheet and press `Ctrl` + `Enter` (or `F5`). The DAG query planner orchestrates parallel isolate data retrieval and performs synthetic relational joins in local ephemeral C-memory (`sqlite3.openInMemory()`).
 
 ---
 
-## Production Cookbook
+## 2. Connection Strings Reference (All 13 Engine Drivers)
 
-### 1. Cross-Database Relay (PostgreSQL -> MySQL -> SQLite)
+| Engine | Protocol / URI Scheme | Connection String Format | Example Connection String |
+| :--- | :--- | :--- | :--- |
+| **PostgreSQL** | `postgresql://` | `postgresql://user:password@host:port/dbname` | `postgresql://admin:secret@db.company.com:5432/ecommerce` |
+| **MySQL / MariaDB** | `mysql://` | `mysql://user:password@host:port/dbname` | `mysql://root:secret@mysql.company.com:3306/inventory` |
+| **SQLite** | Local File Path | `C:\path\to\database.sqlite` or `/path/to/db.sqlite` | `/var/data/warehouse_stock.sqlite` |
+| **MongoDB** | `mongodb://` | `mongodb://user:password@host:port/dbname?authSource=admin` | `mongodb://app:secret@mongo.company.com:27017/analytics?authSource=admin` |
+| **Redis** | `redis://` | `redis://:password@host:port/dbIndex` or `redis://host:port/0` | `redis://:secret@cache.company.com:6379/0` |
+| **DuckDB** | Local File Path | `C:\path\to\analytics.duckdb` or `:memory:` | `/var/data/analytics.duckdb` |
+| **Microsoft SQL Server** | `mssql://` | `mssql://user:password@host:port/dbname` | `mssql://sa:SecretPass123!@mssql.company.com:1433/master` |
+| **ClickHouse** | `http://` | `http://user:password@host:port/dbname` | `http://default:secret@clickhouse.company.com:8123/analytics_db` |
+| **PlanetScale** | `planetscale://` | `planetscale://user:password@host:3306/dbname` | `planetscale://ps_user:ps_pass@aws.connect.psdb.cloud/production` |
+| **CockroachDB** | `postgresql://` | `postgresql://user:password@host:26257/dbname` | `postgresql://root@cockroach.company.com:26257/defaultdb` |
+| **YugabyteDB** | `postgresql://` | `postgresql://user:password@host:5435/dbname` | `postgresql://yugabyte:yugabyte@yugabyte.company.com:5435/yugabyte` |
+| **Oracle Database** | `oracle://` | `oracle://user:password@host:1521/service_name` | `oracle://system:secret@oracle.company.com:1521/FREEPDB1` |
+| **Cassandra / ScyllaDB** | `cassandra://` | `cassandra://user:password@host:9042/keyspace` | `cassandra://cassandra:cassandra@cassandra.company.com:9042/system` |
 
-Correlate customer accounts in PostgreSQL with active MySQL orders and embedded SQLite warehouse stock:
+---
+
+## 3. Example E-Commerce Federation Architecture
+
+To illustrate cross-database federation, consider a typical modern e-commerce platform where services are split across multiple specialized database engines linked by standard domain identifiers (`customer_id` and `order_id`):
+
+1. **`customer_id`** (`cust_101` – `cust_105`): Links customer profiles, orders, shipments, MongoDB logs, Redis sessions, and ClickHouse web events.
+2. **`order_id`** (`ord_901` – `ord_906`): Links SQL orders, physical shipments, SQLite warehouse stock bins, and Redis carts.
+
+---
+
+## 4. Production Query Cookbook
+
+### Recipe 1: Cross-Database Relay (PostgreSQL -> MySQL -> SQLite)
+Correlate customer profiles in PostgreSQL with active MySQL orders and embedded SQLite warehouse stock bins:
 
 ```javascript
-const pg = environment.connections.pg_main;
-const mysql = environment.connections.mysql_orders;
-const sqlite = environment.connections.sqlite_inventory;
+const pg = environment.connections.ecommerce_pg;
+const mysql = environment.connections.inventory_mysql;
+const sqlite = environment.connections.sqllite;
 
 select(() => {
     PostgreSql(pg.id, ['customer_id', 'email', 'full_name'], pg.tables['customers'])
 })
-// Stage 1: Relay customer_id to MySQL orders
+// Stage 1: Relay customer_id to MySQL shipments
 .innerJoin((cust) => {
-    MySql(mysql.id, ['order_id', 'customer_id', 'order_total'], mysql.tables['orders'])
-        .where((order) => order.customer_id is cust.customer_id)
+    MySql(mysql.id, ['shipment_id', 'order_id', 'customer_id', 'carrier'], mysql.tables['shipments'])
+        .where((ship) => ship.customer_id is cust.customer_id)
 })
 // Stage 2: Relay order_id to SQLite warehouse bins
-.innerJoin((order) => {
+.innerJoin((ship) => {
     Sqlite(sqlite.id, ['item_sku', 'order_id', 'warehouse_bin', 'quantity'], sqlite.tables['warehouse_stock'])
-        .where((stock) => stock.order_id is order.order_id)
+        .where((stock) => stock.order_id is ship.order_id)
 })
-.orderBy((stock) => stock.quantity, 'DESC');
+.orderBy((row) => row.quantity, 'DESC');
 ```
 
 ---
 
-### 2. Relational to Document Correlation (PostgreSQL + MongoDB)
-
-Correlate relational customer profiles with high-throughput MongoDB activity logs without an external ETL:
+### Recipe 2: Relational to NoSQL Document Correlation (PostgreSQL + MongoDB)
+Correlate relational customer accounts in PostgreSQL with high-throughput MongoDB user activity logs:
 
 ```javascript
-const pg = environment.connections.pg_main;
-const mongo = environment.connections.mongo_logs;
-const vipEmail = 'alex.morgan@enterprise.org';
+const pg = environment.connections.ecommerce_pg;
+const mongo = environment.connections.default_mongodb;
 
 select(() => {
-    PostgreSql(pg.id, ['customer_id', 'email'], pg.tables['customers'])
-        .where((c) => c.email is vipEmail)
+    PostgreSql(pg.id, ['customer_id', 'full_name', 'email'], pg.tables['customers'])
+        .where((cust) => cust.country is 'US')
 })
-.innerJoin((c) => {
-    MongoDb(mongo.id, 'user_activity_logs')
-        .where((log) => log.customerId is c.customer_id AND log.action LIKE '%checkout%')
+.innerJoin((cust) => {
+    Mongo(mongo.id, ['_id', 'customer_id', 'order_id', 'event_type', 'platform'], mongo.collections['user_activity_logs'])
+        .where((log) => log.customer_id is cust.customer_id)
 });
 ```
 
 ---
 
-### 3. Inventory Discrepancy Detection (leftJoin + is null)
-
-Identify confirmed customer orders that have missing warehouse allocations across independent database systems:
-
-```javascript
-const mysql = environment.connections.mysql_orders;
-const sqlite = environment.connections.sqlite_inventory;
-
-select(() => {
-    MySql(mysql.id, ['order_id', 'customer_id', 'status'], mysql.tables['orders'])
-        .where((o) => o.status is 'CONFIRMED')
-})
-.leftJoin((order) => {
-    Sqlite(sqlite.id, ['order_id', 'item_sku', 'quantity'], sqlite.tables['warehouse_stock'])
-        .where((stock) => stock.order_id is order.order_id)
-})
-.where((row) => row.item_sku is null);
-```
-
----
-
-### 4. High-Concurrency Parallel Batching (declare asyncRun)
-
-Query multiple database engines concurrently across separate background Dart isolates:
+### Recipe 3: High-Concurrency Parallel Batching (`declare asyncRun`)
+Execute parallel query isolates across PostgreSQL, MySQL, and Redis simultaneously:
 
 ```javascript
-const pg = environment.connections.pg_main;
-const mysql = environment.connections.mysql_orders;
+const pg = environment.connections.ecommerce_pg;
+const mysql = environment.connections.inventory_mysql;
+const redis = environment.connections.redis;
 
-const priorityCarriers = ['FedEx', 'DHL', 'UPS'];
-const targetFields = ['customer_id', 'email'];
+const targetCustomer = 'cust_101';
+const customerCols = ['customer_id', 'full_name', 'email'];
 
 select(() => {
     declare asyncRun(() => {
-        PostgreSql(pg.id, [...targetFields], pg.tables['customers']),
-        MySql(mysql.id, ['shipment_id', 'customer_id', 'carrier'], mysql.tables['shipments'])
+        PostgreSql(pg.id, [...customerCols], pg.tables['customers']),
+        MySql(mysql.id, ['shipment_id', 'order_id', 'carrier', 'tracking_code'], mysql.tables['shipments']),
+        Redis(redis.id, 'session:cust_101')
     })
-    .where((row) => row.carrier IN priorityCarriers)
-})
-.limit(50);
-```
-
----
-
-### 5. Real-Time Session Cache Enrichment (PostgreSQL + Redis)
-
-Correlate persistent PostgreSQL database records with live Redis in-memory session keys:
-
-```javascript
-const pg = environment.connections.pg_main;
-const redis = environment.connections.redis_cache;
-
-select(() => {
-    PostgreSql(pg.id, ['customer_id', 'email'], pg.tables['customers'])
-})
-.innerJoin((cust) => {
-    Redis(redis.id, 'session:user:*')
+    .where((row) => row.customer_id is targetCustomer)
 });
 ```

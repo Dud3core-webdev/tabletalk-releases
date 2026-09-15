@@ -4,20 +4,67 @@
 
 In production software engineering, application state rarely lives in a single database engine. Architectures typically distribute workloads across specialized storage technologies:
 
-| Engine | Typical Production Role |
-| :--- | :--- |
-| **PostgreSQL** | Primary user accounts, multi-tenant relational models, transactional data |
-| **MySQL** | E-commerce transactions, legacy operational stores |
-| **MongoDB** | Unstructured event streams, activity logs, dynamic document payloads |
-| **Redis** | In-memory session states, distributed locks, ephemeral cache tokens |
-| **SQLite** | Local embedded storage, desktop client state, offline caches |
+| Engine | Typical Production Role | Protocol / Default Scheme |
+| :--- | :--- | :--- |
+| **PostgreSQL** | Primary user accounts, multi-tenant relational models, transactional data | `postgresql://` |
+| **MySQL / MariaDB** | E-commerce transactions, operational relational stores | `mysql://` |
+| **MongoDB** | Unstructured event streams, activity logs, dynamic document payloads | `mongodb://` |
+| **Redis** | In-memory session states, distributed locks, ephemeral cache tokens | `redis://` |
+| **SQLite** | Local embedded storage, desktop client state, offline caches | File Path / `:memory:` |
+| **DuckDB** | Fast local analytical column-store execution | File Path / `:memory:` |
+| **Microsoft SQL Server** | Enterprise T-SQL operational databases and transactional stores | `mssql://` |
+| **ClickHouse** | High-throughput columnar real-time analytics engine | `http://` |
+| **PlanetScale** | Cloud-native serverless MySQL-compatible cluster stores | `planetscale://` |
+| **CockroachDB** | Distributed resilient cloud PostgreSQL-compatible SQL engine | `postgresql://` |
+| **YugabyteDB** | Cloud-native distributed YSQL relational database | `postgresql://` |
+| **Oracle Database** | Enterprise PL/SQL mission-critical relational infrastructure | `oracle://` |
+| **Cassandra / ScyllaDB** | Distributed high-speed NoSQL CQL keyspace stores | `cassandra://` |
 
-### The Common Approaches
+---
 
-When developers need to correlate data across these disparate stores (e.g., verifying whether an operational event in MongoDB matches a paid customer in PostgreSQL), the typical solutions carry clear operational trade-offs:
+## Example E-Commerce Federation Architecture
 
-1. **Ad-hoc scripts:** Writing Python, Node.js, or Go scripts that fetch records over the network into application memory. These scripts often lack query optimization, handle pagination inconsistently, and expose credentials in source code.
-2. **Cloud data warehouses:** Standing up ETL/ELT pipelines to extract, transform, and load data into remote warehouses (Snowflake, BigQuery, ClickHouse). While effective for large-scale analytical reporting, warehouses introduce ingestion latency, recurring cloud costs, and data-egress security compliance hurdles for routine developer workflows.
+Consider a typical e-commerce infrastructure where business domain entities are distributed across multiple specialized database engines linked via shared join keys:
+
+- **`customer_id`** (`cust_101` – `cust_105`): Links customer profiles, orders, shipments, activity logs, Redis user sessions, and ClickHouse web events.
+- **`order_id`** (`ord_901` – `ord_906`): Links SQL order records, physical shipments, SQLite warehouse inventory stock, Redis carts, and web events.
+
+```mermaid
+graph TD
+    subgraph PostgreSQL ["PostgreSQL (ecommerce_pg)"]
+        C["customers<br/>(customer_id, full_name, email, country)"]
+        O["orders<br/>(order_id, customer_id, order_total, status)"]
+        C -->|1 : N| O
+    end
+
+    subgraph MySQL ["MySQL (inventory_mysql)"]
+        S["shipments<br/>(shipment_id, order_id, customer_id, carrier, tracking_code)"]
+    end
+
+    subgraph SQLite ["SQLite (related_warehouse.sqlite)"]
+        W["warehouse_stock<br/>(item_sku, order_id, customer_id, warehouse_bin, quantity)"]
+    end
+
+    subgraph MongoDB ["MongoDB (analytics_mongo)"]
+        M["user_activity_logs<br/>(_id, customer_id, order_id, event_type, platform)"]
+    end
+
+    subgraph Redis ["Redis (Session & Cart Cache)"]
+        R1["session:{customer_id}<br/>(customer_id, role, active_cart_id)"]
+        R2["cart:{order_id}<br/>(items, currency)"]
+    end
+
+    subgraph ClickHouse ["ClickHouse (analytics_db)"]
+        CH["analytics_db_web_events<br/>(event_id, customer_id, order_id, event_type, duration_ms)"]
+    end
+
+    O -.->|order_id| S
+    O -.->|order_id| W
+    C -.->|customer_id| M
+    C -.->|customer_id| R1
+    O -.->|order_id| R2
+    C -.->|customer_id| CH
+```
 
 ---
 
@@ -82,61 +129,12 @@ flowchart TD
     SYN --> OUT["Federated Analytical Result (Grid / JSON)"]
 ```
 
-### Ephemeral SQLite :memory: Staging Lifecycle
-
-Intermediate datasets stream into ephemeral C-memory tables where synthetic relational indexes and foreign key linkages are created dynamically:
-
-```mermaid
-sequenceDiagram
-    autonumber
-    actor Dev as Developer / AI Worksheet
-    participant Lexer as TTQL AST Parser & Security Gate
-    participant Pool as CrossDbPoolManager (OS Keychain)
-    participant Isolates as Background Dart Isolates
-    participant MemoryDb as Ephemeral sqlite3 :memory:
-    participant UI as Results Data Grid
-
-    Dev->>Lexer: Execute TTQL Script
-    Note over Lexer: Verify Read-Only Invariants<br/>(Block INSERT/UPDATE/DROP)
-    Lexer->>Pool: Request Authenticated Drivers
-    Pool->>Isolates: Spawn Parallel DB Tasks (FIFO max 3)
-    par Remote Ingestion
-        Isolates->>MemoryDb: Stream PostgreSQL rows to temp_customers
-    and
-        Isolates->>MemoryDb: Stream MySQL rows to temp_orders
-    and
-        Isolates->>MemoryDb: Stream Mongo documents to temp_events
-    end
-    Note over MemoryDb: Foreign Key Staged Injection<br/>& SQLite Query Plan Optimizer
-    MemoryDb->>MemoryDb: Execute Synthetic Relational Joins
-    MemoryDb->>UI: Stream Unified Record Batch
-    Note over MemoryDb: Staging DB explicitly disposed<br/>via finally: stagingDb.dispose()
-```
-
----
-
-## 8-Stage Execution Pipeline
-
-From raw functional script to tabular result grid:
-
-```mermaid
-flowchart LR
-    A["1. TTQL Script"] --> B["2. Lexer & Security Gate"]
-    B --> C["3. Static Type Inference"]
-    C --> D["4. DAG Isolate Planner"]
-    D --> E["5. Parallel Native Drivers"]
-    E --> F["6. Ephemeral SQLite Staging"]
-    F --> G["7. Synthetic Relational Joins"]
-    G --> H["8. Local Result Grid"]
-```
-
 ---
 
 ## Pragmatic Design Trade-Offs
 
 To maintain predictable behavior, TTQL is deliberately scoped around the following trade-offs:
 
-1. **Designed for Working Sets, Not Petabyte Warehousing:** Ephemeral staging uses your local workstation's RAM. It is optimized for query result sets ranging from tens of rows to tens of thousands of rows. For bulk analytical workloads scanning billions of rows, dedicated data warehouses remain the correct tool.
+1. **Designed for Working Sets, Not Petabyte Warehousing:** Ephemeral staging uses your local workstation's RAM. It is optimized for query result sets ranging from tens of rows to tens of thousands of rows.
 2. **Read-Only Scope:** TTQL does not execute cross-database transactions (`2PC`) or multi-source writes. It is strictly an analytical and diagnostic querying tool.
 3. **Safe Concurrency Bounds:** By enforcing a strict ceiling of 3 concurrent worker isolates per batch, TTQL prioritizes database stability over raw saturated network throughput.
-

@@ -4,14 +4,18 @@ All notable changes, architectural milestones, and engine updates for TableTalk 
 
 ---
 
-## [v1.2.5] — Current Release
+## [1.2.5] - 2026-09-14
 
-### Fixed & Hardened
-- **Safe Read-Only Guardrails**: Fixed a bug where AI chat entity relationship analysis and query profiler calls could execute DDL statements (`CREATE INDEX`) on connected databases.
-- **Fail-Fast Database Handles**: Eliminated silent read-write fallbacks in SQLite handles (`SqliteDbAdapter`) to guarantee 100% database immutability in read-only mode.
-- **Session Read-Only Enforcement**: Added active session read-only transaction configuration across PostgreSQL (`SET default_transaction_read_only = on`) and MySQL (`SET SESSION TRANSACTION READ ONLY`).
-- **Expanded Lexical Guard**: Added strict keyword filters for `INDEX`, `REINDEX`, `MERGE`, `CALL`, `RENAME`, `COMMENT`, `LOCK`, `UNLOCK`, `COPY`, `FLUSH`, and `KILL`.
-- **Catastrophic Command Protection**: Added `validateCatastrophicSql` safety guard blocking nuclear instance-destruction statements (`DROP DATABASE`, `DROP SCHEMA`, `SHUTDOWN`, `FLUSHALL`, `ATTACH DATABASE`) even when running in Direct Write / YOLO Mode.
+### Security & Reliability
+- **Hardened Safe Read-Only Mode**: Fixed a bug where AI chat entity relationship analysis and query profiling could execute database DDL modifications (`CREATE INDEX`).
+- **Strict Read-Only Handle Discipline**: Removed silent defensive fallback to read-write mode in SQLite database adapter (`SqliteDbAdapter`) to enforce strict local database immutability and fail-fast exception handling.
+- **Session Read-Only Enforcement**: Added active session read-only transaction configuration for PostgreSQL (`SET default_transaction_read_only = on`) and MySQL (`SET SESSION TRANSACTION READ ONLY`).
+- **Expanded Keyword Guard**: Added DDL and mutation keywords (`INDEX`, `REINDEX`, `MERGE`, `CALL`, `RENAME`, `COMMENT`, `LOCK`, `UNLOCK`, `COPY`, `FLUSH`, `KILL`) to `SqlValidator` protection rules.
+- **Catastrophic Command Protection**: Added `SqlValidator.validateCatastrophicSql` safeguard blocking nuclear instance-destruction statements (`DROP DATABASE`, `DROP SCHEMA`, `SHUTDOWN`, `FLUSHALL`, `FLUSHDB`, `ATTACH DATABASE`) even when operating in Direct Write / YOLO Mode.
+
+---
+
+## [v1.2.5] — Previous Release
 
 ---
 
