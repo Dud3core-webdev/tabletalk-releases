@@ -1,13 +1,13 @@
 {
-  "version": "1.2.5",
-  "releaseDate": "2026-09-14",
-  "releaseNotes": "### Security & Reliability\n- **Hardened Safe Read-Only Mode**: Fixed a bug where AI chat entity relationship analysis and query profiling could execute database DDL modifications (`CREATE INDEX`).\n- **Strict Read-Only Handle Discipline**: Removed silent defensive fallback to read-write mode in SQLite database adapter (`SqliteDbAdapter`) to enforce strict local database immutability and fail-fast exception handling.\n- **Session Read-Only Enforcement**: Added active session read-only transaction configuration for PostgreSQL (`SET default_transaction_read_only = on`) and MySQL (`SET SESSION TRANSACTION READ ONLY`).\n- **Expanded Keyword Guard**: Added DDL and mutation keywords (`INDEX`, `REINDEX`, `MERGE`, `CALL`, `RENAME`, `COMMENT`, `LOCK`, `UNLOCK`, `COPY`, `FLUSH`, `KILL`) to `SqlValidator` protection rules.\n- **Catastrophic Command Protection**: Added `SqlValidator.validateCatastrophicSql` safeguard blocking nuclear instance-destruction statements (`DROP DATABASE`, `DROP SCHEMA`, `SHUTDOWN`, `FLUSHALL`, `FLUSHDB`, `ATTACH DATABASE`) even when operating in Direct Write / YOLO Mode.",
-  "sha256": "488037d6dd0b0c97fa820688e71f91a3a1fa819718a8c928a7a11b8f7ebf5f68",
-  "downloadUrl": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.5/TableTalkSetup.exe",
+  "version": "1.2.6",
+  "releaseDate": "2026-10-29",
+  "releaseNotes": "### Added & Expanded\n- **TTQL Analytical Engine & Fluent Pipeline**: Introduced method-chained fluent pipeline (`from()`, `.select()`, `.where()`, `.innerJoin()`, `.leftJoin()`, `.groupBy()`, `.having()`, `.orderBy()`, `.limit()`, `.offset()`, `.skip()`) with analytical aggregations (`count()`, `sum()`, `avg()`, `min()`, `max()`, `.as()`).\n- **TTQL Studio Autocomplete & Syntax Highlighter**: Real-time syntax highlighting for pipeline methods, analytical functions, SQL `--` and C-style `//` comments, and context-aware dot autocomplete.\n- **Standalone TTQL Architecture**: Decoupled open-source TTQL compiler, runtime, and JSON-RPC Language Server Protocol (LSP) daemon for IDE integration.\n- **13 Engine TTQL Poly-Store Support**: Query federation across SQLite, PostgreSQL, MySQL / MariaDB, MongoDB, Redis, DuckDB, Microsoft SQL Server, ClickHouse, PlanetScale, CockroachDB, YugabyteDB, Oracle Database, and Cassandra / ScyllaDB.\n- **Automated Server Pool Import**: One-click catalog discovery and pool creation for entire database clusters.",
+  "sha256": "88ea4800d8f244df2e2165e1a33f8bbc6bd62c3b26fc468a9c4547db202c3fb9",
+  "downloadUrl": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.6/TableTalkSetup.exe",
   "platforms": {
     "windows": {
-      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.5/TableTalkSetup.exe",
-      "sha256": "488037d6dd0b0c97fa820688e71f91a3a1fa819718a8c928a7a11b8f7ebf5f68",
+      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.6/TableTalkSetup.exe",
+      "sha256": "88ea4800d8f244df2e2165e1a33f8bbc6bd62c3b26fc468a9c4547db202c3fb9",
       "minOsVersion": "10.0.17763"
     },
     "macos": {
@@ -16,8 +16,8 @@
       "minOsVersion": "12.0"
     },
     "linux": {
-      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.5/TableTalk_Linux_v1.2.5.tar.gz",
-      "sha256": "f34d3747130cfb768696cc0cc80d130cb11642cdfcfc40c30c3b95ea412caafd",
+      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.6/TableTalk_Linux_v1.2.6.tar.gz",
+      "sha256": "63a604f4448a16b417d3f4066749f0935fd61ea8f67243a4978c55ecb4d6f069",
       "minOsVersion": "22.04"
     }
   }
