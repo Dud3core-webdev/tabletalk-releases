@@ -6,15 +6,27 @@ All notable changes, architectural milestones, and engine updates for TableTalk 
 
 ## [v1.2.6] — Current Release
 
-### Added & Expanded
-- **13 Engine TTQL Poly-Store Support**: First-class TTQL query compilation and isolate execution across **SQLite, PostgreSQL, MySQL / MariaDB, MongoDB, Redis, DuckDB, Microsoft SQL Server, ClickHouse, PlanetScale, CockroachDB, YugabyteDB, Oracle Database, and Cassandra / ScyllaDB**.
-- **Automated Server Pool Import**: One-click catalog discovery and pool creation for entire database clusters (scanning `pg_database`, `information_schema.SCHEMATA`, `sys.databases`, `system.databases`, etc.).
-- **Periodic Background Schema Indexing**: Configurable background job (`AutoSchemaSyncService`) re-indexing schema metadata and synthetic foreign key graphs across active pools.
-- **Dialect-Aware TTQL Translators**: Dialect parameter binding (`$1` for PG/Cockroach/Yugabyte; `?` for SQL/MySQL/ClickHouse/MSSQL/Oracle/Cassandra), backtick quoting for MySQL/PlanetScale, and native MQL/Redis pipeline compilation.
+### TTQL Analytical Engine & Fluent Pipeline
+- **Fluent Pipeline Syntax:** First-class support for method-chained queries (`from()`, `.select()`, `.where()`, `.innerJoin()`, `.leftJoin()`, `.groupBy()`, `.having()`, `.orderBy()`, `.limit()`, `.offset()`, `.skip()`).
+- **Analytical Aggregations:** Integrated aggregate engine supporting `count()`, `sum()`, `avg()`, `min()`, `max()` with deterministic column aliasing via `.as()`.
+- **TTQL Studio Autocomplete & Highlighting:** Real-time syntax highlighting for pipeline methods, analytical functions, SQL `--` and C-style `//` comments, and context-aware dot autocomplete.
+- **Decoupled Language Server (LSP):** Standalone JSON-RPC LSP daemon providing schema-aware diagnostics, hover documentation, and auto-completions for VS Code and desktop IDEs.
+
+### Poly-Store Expansion & Pool Automation
+- **13 Engine TTQL Support:** Query federation across SQLite, PostgreSQL, MySQL / MariaDB, MongoDB, Redis, DuckDB, Microsoft SQL Server, ClickHouse, PlanetScale, CockroachDB, YugabyteDB, Oracle Database, and Cassandra / ScyllaDB.
+- **Automated Server Pool Import:** One-click catalog discovery and pool creation for entire database clusters (scanning `pg_database`, `information_schema.SCHEMATA`, `sys.databases`, `system.databases`).
+- **Periodic Background Schema Indexing:** Configurable background synchronization (`AutoSchemaSyncService`) maintaining live synthetic foreign key graphs across active pools.
 
 ---
 
 ## [v1.2.5] — Previous Release
+
+### Security & Reliability
+- **Hardened Safe Read-Only Mode:** Fixed a bug where AI chat entity relationship analysis and query profiling could execute database DDL modifications (`CREATE INDEX`).
+- **Strict Read-Only Handle Discipline:** Removed silent defensive fallback to read-write mode in SQLite database adapter (`SqliteDbAdapter`) to enforce strict local database immutability and fail-fast exception handling.
+- **Session Read-Only Enforcement:** Added active session read-only transaction configuration for PostgreSQL (`SET default_transaction_read_only = on`) and MySQL (`SET SESSION TRANSACTION READ ONLY`).
+- **Expanded Keyword Guard:** Added DDL and mutation keywords (`INDEX`, `REINDEX`, `MERGE`, `CALL`, `RENAME`, `COMMENT`, `LOCK`, `UNLOCK`, `COPY`, `FLUSH`, `KILL`) to `SqlValidator` protection rules.
+- **Catastrophic Command Protection:** Added `SqlValidator.validateCatastrophicSql` safeguard blocking nuclear instance-destruction statements (`DROP DATABASE`, `DROP SCHEMA`, `SHUTDOWN`, `FLUSHALL`, `FLUSHDB`, `ATTACH DATABASE`) even when operating in Direct Write / YOLO Mode.
 
 ---
 

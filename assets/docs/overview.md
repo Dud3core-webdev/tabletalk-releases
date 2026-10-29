@@ -92,14 +92,14 @@ TTQL executes data retrieval in parallel background isolates and stages intermed
 
 ## Architecture Diagrams
 
-### FIFO Thread Throttling & Isolate Scheduling
+### Multi-Engine Isolate Scheduling & Concurrency Throttling
 
-When a query declares multiple simultaneous evaluations in `declare asyncRun`, the DAG planner partitions isolate dispatch into sequential batches of at most 3 concurrent threads:
+When a federated query references multiple database sources across `.innerJoin()` or `.leftJoin()` stages, the DAG planner partitions isolate dispatch into concurrent threads (up to 3 concurrent isolate queries per batch):
 
 ```mermaid
 flowchart TD
     subgraph Client["TableTalk Query Engine (Local Isolate)"]
-        Q["TTQL Script: declare asyncRun(Q1..Q5)"]
+        Q["TTQL Script: from(pg.customers as c).innerJoin(mysql.shipments as s, on: c.customer_id == s.customer_id)"]
         DAG["DAG Query Planner & Throttler"]
         Q --> DAG
     end

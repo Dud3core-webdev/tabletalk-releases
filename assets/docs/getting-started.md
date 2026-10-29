@@ -1,115 +1,149 @@
 # Quick Start Guide & Connection Reference
 
-TableTalk Query Language (TTQL) is a local, privacy-first functional DSL designed for cross-database analytical federation.
+TableTalk Query Language (TTQL) is a local-first, privacy-native federated query language designed for cross-database analytical queries.
 
 ---
 
 ## 1. 3-Step Quick Start
 
 ### Step 1: Add Database Connections
-In TableTalk, add your target databases or click **Import Server Pool** to discover all hosted server databases automatically. Credentials are securely encrypted inside your native OS Credential Vault (Windows DPAPI, macOS Keychain, Linux Secret Service).
+In TableTalk, add your target databases manually or click **Import Server Pool** to discover all hosted server databases automatically. Credentials are encrypted inside your native OS Credential Vault (Windows DPAPI, macOS Keychain, Linux Secret Service).
 
 ### Step 2: Open TTQL Studio
-Press `Ctrl` + `Shift` + `T` (or click **TTQL Studio** in the navigation bar). The **Environment Explorer** lists all active database connection aliases in `environment.connections.<alias>`.
+Press `Ctrl` + `Shift` + `T` (or click **TTQL Studio** in the navigation bar). The **Environment Explorer** lists all active database connection aliases and their introspected tables/collections.
 
 ### Step 3: Run Your Federated Query
-Write your query script in the worksheet and press `Ctrl` + `Enter` (or `F5`). The DAG query planner orchestrates parallel isolate data retrieval and performs synthetic relational joins in local ephemeral C-memory (`sqlite3.openInMemory()`).
+Write your query using TTQL's modern fluent pipeline and press `Ctrl` + `Enter` (or `F5`). The DAG query planner orchestrates parallel isolate data retrieval and performs synthetic relational joins in local ephemeral C-memory (`sqlite3.openInMemory()`).
+
+```ttql
+const pg = environment.connections.ecommerce_pg;
+const mysql = environment.connections.inventory_mysql;
+
+from(pg.customers as c)
+  .innerJoin(mysql.shipments as s, on: c.customer_id == s.customer_id)
+  .where(c.country == 'US')
+  .select([c.customer_id, c.full_name, c.email, s.shipment_id, s.carrier])
+  .orderBy(c.customer_id, 'ASC')
+  .limit(20);
+```
 
 ---
 
-## 2. Connection Strings Reference (All 13 Engine Drivers)
+## 2. Connection Strings Reference (Supported Engine Drivers)
 
 | Engine | Protocol / URI Scheme | Connection String Format | Example Connection String |
 | :--- | :--- | :--- | :--- |
-| **PostgreSQL** | `postgresql://` | `postgresql://user:password@host:port/dbname` | `postgresql://admin:secret@db.company.com:5432/ecommerce` |
-| **MySQL / MariaDB** | `mysql://` | `mysql://user:password@host:port/dbname` | `mysql://root:secret@mysql.company.com:3306/inventory` |
-| **SQLite** | Local File Path | `C:\path\to\database.sqlite` or `/path/to/db.sqlite` | `/var/data/warehouse_stock.sqlite` |
-| **MongoDB** | `mongodb://` | `mongodb://user:password@host:port/dbname?authSource=admin` | `mongodb://app:secret@mongo.company.com:27017/analytics?authSource=admin` |
-| **Redis** | `redis://` | `redis://:password@host:port/dbIndex` or `redis://host:port/0` | `redis://:secret@cache.company.com:6379/0` |
-| **DuckDB** | Local File Path | `C:\path\to\analytics.duckdb` or `:memory:` | `/var/data/analytics.duckdb` |
-| **Microsoft SQL Server** | `mssql://` | `mssql://user:password@host:port/dbname` | `mssql://sa:SecretPass123!@mssql.company.com:1433/master` |
-| **ClickHouse** | `http://` | `http://user:password@host:port/dbname` | `http://default:secret@clickhouse.company.com:8123/analytics_db` |
+| **PostgreSQL** | `postgresql://` | `postgresql://user:password@host:port/dbname` | `postgresql://admin:secret@localhost:5432/ecommerce` |
+| **MySQL / MariaDB** | `mysql://` | `mysql://user:password@host:port/dbname` | `mysql://root:secret@localhost:3306/inventory` |
+| **SQLite** | Local File Path | `C:\path\to\database.sqlite` or `/path/to/db.sqlite` | `C:\projects\TableTalk\test_dbs\related_warehouse.sqlite` |
+| **MongoDB** | `mongodb://` | `mongodb://user:password@host:port/dbname?authSource=admin` | `mongodb://app:secret@localhost:27017/analytics?authSource=admin` |
+| **Redis** | `redis://` | `redis://:password@host:port/dbIndex` or `redis://host:port/0` | `redis://:secret@localhost:6379/0` |
+| **DuckDB** | Local File Path | `C:\path\to\analytics.duckdb` or `:memory:` | `C:\projects\TableTalk\test_dbs\duckdb.db` |
+| **Microsoft SQL Server** | `mssql://` | `mssql://user:password@host:port/dbname` | `mssql://sa:SecretPass123!@localhost:1433/master` |
+| **ClickHouse** | `http://` | `http://user:password@host:port/dbname` | `http://default:secret@localhost:8123/analytics_db` |
 | **PlanetScale** | `planetscale://` | `planetscale://user:password@host:3306/dbname` | `planetscale://ps_user:ps_pass@aws.connect.psdb.cloud/production` |
-| **CockroachDB** | `postgresql://` | `postgresql://user:password@host:26257/dbname` | `postgresql://root@cockroach.company.com:26257/defaultdb` |
-| **YugabyteDB** | `postgresql://` | `postgresql://user:password@host:5435/dbname` | `postgresql://yugabyte:yugabyte@yugabyte.company.com:5435/yugabyte` |
-| **Oracle Database** | `oracle://` | `oracle://user:password@host:1521/service_name` | `oracle://system:secret@oracle.company.com:1521/FREEPDB1` |
-| **Cassandra / ScyllaDB** | `cassandra://` | `cassandra://user:password@host:9042/keyspace` | `cassandra://cassandra:cassandra@cassandra.company.com:9042/system` |
+| **CockroachDB** | `postgresql://` | `postgresql://user:password@host:26257/dbname` | `postgresql://root@localhost:26257/defaultdb` |
+| **YugabyteDB** | `postgresql://` | `postgresql://user:password@host:5435/dbname` | `postgresql://yugabyte:yugabyte@localhost:5435/yugabyte` |
+| **Oracle Database** | `oracle://` | `oracle://user:password@host:1521/service_name` | `oracle://system:secret@localhost:1521/FREEPDB1` |
+| **Cassandra / ScyllaDB** | `cassandra://` | `cassandra://user:password@host:9042/keyspace` | `cassandra://cassandra:cassandra@localhost:9042/system` |
 
 ---
 
 ## 3. Example E-Commerce Federation Architecture
 
-To illustrate cross-database federation, consider a typical modern e-commerce platform where services are split across multiple specialized database engines linked by standard domain identifiers (`customer_id` and `order_id`):
+In modern architectures, services partition data across specialized database engines linked by standard domain identifiers:
 
-1. **`customer_id`** (`cust_101` – `cust_105`): Links customer profiles, orders, shipments, MongoDB logs, Redis sessions, and ClickHouse web events.
-2. **`order_id`** (`ord_901` – `ord_906`): Links SQL orders, physical shipments, SQLite warehouse stock bins, and Redis carts.
+1. **`customer_id`** (`cust_101` – `cust_105`): Links customer profiles in PostgreSQL, shipments in MySQL, activity logs in MongoDB, and sessions in Redis.
+2. **`order_id`** (`ord_901` – `ord_906`): Links SQL orders, shipments, warehouse stock bins, and invoices.
+3. **`item_sku`** (`SKU-8821`, `SKU-1044`): Links warehouse stock in SQLite to products in PostgreSQL.
 
 ---
 
 ## 4. Production Query Cookbook
 
-### Recipe 1: Cross-Database Relay (PostgreSQL -> MySQL -> SQLite)
-Correlate customer profiles in PostgreSQL with active MySQL orders and embedded SQLite warehouse stock bins:
+### Recipe 1: 3-Way Cross-Database Join (PostgreSQL -> MySQL -> SQLite)
+Correlate customer profiles in PostgreSQL with active shipments in MySQL and warehouse bin locations in SQLite:
 
-```javascript
+```ttql
 const pg = environment.connections.ecommerce_pg;
 const mysql = environment.connections.inventory_mysql;
-const sqlite = environment.connections.sqllite;
+const sqlite = environment.connections.related_warehouse;
 
-select(() => {
-    PostgreSql(pg.id, ['customer_id', 'email', 'full_name'], pg.tables['customers'])
-})
-// Stage 1: Relay customer_id to MySQL shipments
-.innerJoin((cust) => {
-    MySql(mysql.id, ['shipment_id', 'order_id', 'customer_id', 'carrier'], mysql.tables['shipments'])
-        .where((ship) => ship.customer_id is cust.customer_id)
-})
-// Stage 2: Relay order_id to SQLite warehouse bins
-.innerJoin((ship) => {
-    Sqlite(sqlite.id, ['item_sku', 'order_id', 'warehouse_bin', 'quantity'], sqlite.tables['warehouse_stock'])
-        .where((stock) => stock.order_id is ship.order_id)
-})
-.orderBy((row) => row.quantity, 'DESC');
+from(pg.customers as c)
+  .innerJoin(mysql.shipments as s, on: c.customer_id == s.customer_id)
+  .innerJoin(sqlite.warehouse_stock as w, on: s.order_id == w.order_id)
+  .where(c.country == 'US')
+  .select([
+    c.customer_id,
+    c.full_name,
+    c.email,
+    s.shipment_id,
+    w.warehouse_bin,
+    w.quantity
+  ])
+  .orderBy(w.quantity, 'DESC')
+  .limit(25);
 ```
 
 ---
 
-### Recipe 2: Relational to NoSQL Document Correlation (PostgreSQL + MongoDB)
+### Recipe 2: Relational to NoSQL Activity Correlation (PostgreSQL + MongoDB)
 Correlate relational customer accounts in PostgreSQL with high-throughput MongoDB user activity logs:
 
-```javascript
+```ttql
 const pg = environment.connections.ecommerce_pg;
-const mongo = environment.connections.default_mongodb;
+const mongo = environment.connections.analytics_mongo;
 
-select(() => {
-    PostgreSql(pg.id, ['customer_id', 'full_name', 'email'], pg.tables['customers'])
-        .where((cust) => cust.country is 'US')
-})
-.innerJoin((cust) => {
-    Mongo(mongo.id, ['_id', 'customer_id', 'order_id', 'event_type', 'platform'], mongo.collections['user_activity_logs'])
-        .where((log) => log.customer_id is cust.customer_id)
-});
+from(pg.customers as c)
+  .innerJoin(mongo.user_activity_logs as l, on: c.customer_id == l.customer_id)
+  .where(c.country == 'US')
+  .select([
+    c.customer_id,
+    c.full_name,
+    l.event_type,
+    l.platform
+  ])
+  .limit(50);
 ```
 
 ---
 
-### Recipe 3: High-Concurrency Parallel Batching (`declare asyncRun`)
-Execute parallel query isolates across PostgreSQL, MySQL, and Redis simultaneously:
+### Recipe 3: Federated Analytical Aggregation with GROUP BY & HAVING
+Calculate total revenue and order volume per shipping carrier across PostgreSQL orders and MySQL shipments:
 
-```javascript
-const pg = environment.connections.ecommerce_pg;
+```ttql
 const mysql = environment.connections.inventory_mysql;
-const redis = environment.connections.redis;
+const pg = environment.connections.ecommerce_pg;
 
-const targetCustomer = 'cust_101';
-const customerCols = ['customer_id', 'full_name', 'email'];
+from(mysql.shipments as s)
+  .innerJoin(pg.orders as o, on: s.order_id == o.order_id)
+  .groupBy(s.carrier)
+  .select([
+    s.carrier,
+    count() as total_shipments,
+    sum(o.order_total) as carrier_revenue,
+    avg(o.order_total) as avg_order_value
+  ])
+  .having(total_shipments > 1)
+  .orderBy(carrier_revenue, 'DESC');
+```
 
-select(() => {
-    declare asyncRun(() => {
-        PostgreSql(pg.id, [...customerCols], pg.tables['customers']),
-        MySql(mysql.id, ['shipment_id', 'order_id', 'carrier', 'tracking_code'], mysql.tables['shipments']),
-        Redis(redis.id, 'session:cust_101')
-    })
-    .where((row) => row.customer_id is targetCustomer)
-});
+---
+
+### Recipe 4: Redis Session Enrichment
+Enrich active customer profiles with their live session state cached in Redis:
+
+```ttql
+const pg = environment.connections.ecommerce_pg;
+const redis = environment.connections.session_redis;
+
+from(pg.customers as c)
+  .innerJoin(redis.session as r, on: c.customer_id == r.customer_id)
+  .select([
+    c.customer_id,
+    c.full_name,
+    c.email,
+    r.active_cart_id
+  ])
+  .limit(10);
 ```
