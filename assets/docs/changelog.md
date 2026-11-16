@@ -4,7 +4,25 @@ All notable changes, architectural milestones, and engine updates for TableTalk 
 
 ---
 
-## [v1.2.6] — Current Release
+## [v1.2.7] — Current Release
+
+### Licensing & Payments
+- **Perpetual Pass & Community TTQL:** Introduced a one-time Perpetual License (£100.00, lifetime offline access) alongside free Community Edition TTQL federation across up to 2 connections.
+- **Stripe Checkout & Webhook Reliability:** Added automatic Stripe Payment Link provisioning in `StripeCatalogService`, `CancellationToken` propagation in `ProductsFunction`, comma-separated webhook secret rotation support in `StripeSignatureVerifier`, and dev configuration parity in `EnvironmentConfig`.
+
+### Architecture & TTQL Studio Stability
+- **Modular State Services:** Decomposed `AppState` into focused single-responsibility services and controllers (`LicenseStateService`, `PromptSuggestionStateService`, `ConnectionPoolLifecycleCoordinator`, `UserPoolController`, `SchemaIngestionController`, `SettingsController`, and `TtqlWorksheetController`) while retaining `AppState` as the top-level coordinator.
+- **Multi-Tab Worksheet Hardening:** Eliminated unmodifiable list and index-clamping crashes when managing more than 5 tabs, and added horizontal tab bar scrolling plus a quick-jump tab menu.
+- **Website & Open-Source TTQL Alignment:** Updated showcase examples to canonical fluent TTQL syntax and finalized standalone open-source packaging for the `ttql` compiler, LSP daemon, CLI runner, and VS Code extension.
+
+### TTQL Engine & Multi-Engine Adapter Fixes
+- **Parser & Spread Operator Guardrails:** Added qualified `alias.column` support in array constants, `.select([...])` and `IN [...]` spread expansion, and zero-progress loop guards preventing inline-linter freezes.
+- **Staging Precision & Defense-in-Depth Filtering:** Fixed lexicographic ordering on `NUMERIC`/`DECIMAL` strings (`settled_amount`), case-insensitive staged column resolution, and stage-level `WHERE` / `LEFT JOIN` predicate enforcement in SQLite staging.
+- **Oracle, ScyllaDB, MongoDB & ClickHouse Fixes:** Added unquoted Oracle/Cassandra identifier generation and lowercase Oracle metadata/row normalization, automatic `ALLOW FILTERING` and fail-fast CQL v4 error/`timestamp` handling in `CassandraDbAdapter`, `$query` wrapper pushdown in `MongoDbAdapter`, and ClickHouse Docker access configuration.
+
+---
+
+## [v1.2.6] — Previous Release
 
 ### TTQL Analytical Engine & Fluent Pipeline
 - **Fluent Pipeline Syntax:** First-class support for method-chained queries (`from()`, `.select()`, `.where()`, `.innerJoin()`, `.leftJoin()`, `.groupBy()`, `.having()`, `.orderBy()`, `.limit()`, `.offset()`, `.skip()`).
