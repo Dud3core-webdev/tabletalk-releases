@@ -4,7 +4,15 @@ All notable changes, architectural milestones, and engine updates for TableTalk 
 
 ---
 
-## [v1.2.7] — Current Release
+## [v1.2.8] — Current Release
+
+### Fixed & Hardened
+- **Non-Blocking Startup DB Pool Sync:** Decoupled active session database/pool synchronization from the initial app splash screen in `AppState` and parallelized `SessionPoolSyncService` connection attachment with a 6-second per-engine timeout so unreachable/stopped databases never stall app launch.
+- **License UI Key Hygiene:** Replaced the voucher key example in `LicenseSettingsCard` with `TTLK-PRO1-XXXX-XXXX-XXXX-XXXX`.
+
+---
+
+## [v1.2.7] — Previous Release
 
 ### Licensing & Payments
 - **Perpetual Pass & Community TTQL:** Introduced a one-time Perpetual License (£100.00, lifetime offline access) alongside free Community Edition TTQL federation across up to 2 connections.
