@@ -1,13 +1,13 @@
 {
-  "version": "1.2.9",
+  "version": "1.2.10",
   "releaseDate": "2026-11-24",
-  "releaseNotes": "Release TableTalk v1.2.9",
-  "sha256": "b6484266f9e4da37ca5adfabbebe22d83b6dfae1be845d098c5ef39807b31fe2",
-  "downloadUrl": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.9/TableTalkSetup.exe",
+  "releaseNotes": "### Dependencies & Compatibility\n- **TTQL `^1.0.3` Upgrade:** Updated the `ttql` query engine dependency from `^1.0.2` to `^1.0.3`, bringing full `sqlite3` `2.x` and `3.x` compatibility and a 160/160 pub.dev package score.\n\n### Security & Testing\n- **Chat Session Credential Scrubbing Verification:** Updated `multi_connection_test` to assert that plaintext `connectionString` values are stripped from `chat_sessions_table` after OS keychain migration.",
+  "sha256": "a456684fffa60cc60a1b23010175102cf54845dfb8ec79682c92543b30601814",
+  "downloadUrl": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.10/TableTalkSetup.exe",
   "platforms": {
     "windows": {
-      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.9/TableTalkSetup.exe",
-      "sha256": "b6484266f9e4da37ca5adfabbebe22d83b6dfae1be845d098c5ef39807b31fe2",
+      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.10/TableTalkSetup.exe",
+      "sha256": "a456684fffa60cc60a1b23010175102cf54845dfb8ec79682c92543b30601814",
       "minOsVersion": "10.0.17763"
     },
     "macos": {
@@ -16,8 +16,8 @@
       "minOsVersion": "12.0"
     },
     "linux": {
-      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.9/TableTalk_Linux_v1.2.9.tar.gz",
-      "sha256": "c6fd238863b55290c937ea027f96d506064c4d049ffbf0ed97c99b9c33ff6417",
+      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.10/TableTalk_Linux_v1.2.10.tar.gz",
+      "sha256": "29cde40744cd2af06d56e5ee979bf76c8cfc8563191c9d5397b0ad716300cf85",
       "minOsVersion": "22.04"
     }
   }
