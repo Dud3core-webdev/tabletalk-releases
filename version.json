@@ -1,13 +1,13 @@
 {
-  "version": "1.2.8",
-  "releaseDate": "2026-11-17",
-  "releaseNotes": "### Fixed & Hardened\n- **Non-Blocking Startup DB Pool Sync:** Moved `_syncSessionDatabaseConnection` to run asynchronously after local SQLite persistence loads in `AppState`, and updated `SessionPoolSyncService.syncSessionConnectionPool` to attach pooled connections concurrently with a 6-second per-engine timeout so offline database clusters never block the splash screen.\n- **License UI Key Hygiene:** Replaced the real voucher key example in `LicenseSettingsCard` with the synthetic placeholder `TTLK-PRO1-XXXX-XXXX-XXXX-XXXX`.",
-  "sha256": "1a9b960b1330fda981310a67d40dfef97a6fb0a889aca01862e0593c0d983fc2",
-  "downloadUrl": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.8/TableTalkSetup.exe",
+  "version": "1.2.9",
+  "releaseDate": "2026-11-24",
+  "releaseNotes": "Release TableTalk v1.2.9",
+  "sha256": "b6484266f9e4da37ca5adfabbebe22d83b6dfae1be845d098c5ef39807b31fe2",
+  "downloadUrl": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.9/TableTalkSetup.exe",
   "platforms": {
     "windows": {
-      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.8/TableTalkSetup.exe",
-      "sha256": "1a9b960b1330fda981310a67d40dfef97a6fb0a889aca01862e0593c0d983fc2",
+      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.9/TableTalkSetup.exe",
+      "sha256": "b6484266f9e4da37ca5adfabbebe22d83b6dfae1be845d098c5ef39807b31fe2",
       "minOsVersion": "10.0.17763"
     },
     "macos": {
@@ -16,8 +16,8 @@
       "minOsVersion": "12.0"
     },
     "linux": {
-      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.8/TableTalk_Linux_v1.2.8.tar.gz",
-      "sha256": "d35b51c184a419adf5f19cc8dd930ea67653843a71eb86c09d751cab6fe7c653",
+      "url": "https://github.com/Dud3core-webdev/tabletalk-releases/releases/download/v1.2.9/TableTalk_Linux_v1.2.9.tar.gz",
+      "sha256": "c6fd238863b55290c937ea027f96d506064c4d049ffbf0ed97c99b9c33ff6417",
       "minOsVersion": "22.04"
     }
   }
