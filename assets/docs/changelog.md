@@ -4,7 +4,30 @@ All notable changes, architectural milestones, and engine updates for TableTalk 
 
 ---
 
-## [v1.2.8] — Current Release
+## [v1.2.10] — Current Release
+
+### Dependencies & Compatibility
+- **TTQL `^1.0.3` Upgrade:** Updated the `ttql` query engine dependency from `^1.0.2` to `^1.0.3`, bringing full `sqlite3` `2.x` and `3.x` compatibility and a 160/160 pub.dev package score.
+
+### Security & Testing
+- **Chat Session Credential Scrubbing Verification:** Updated `multi_connection_test` to assert that plaintext `connectionString` values are stripped from `chat_sessions_table` after OS keychain migration.
+
+---
+
+## [v1.2.9] — Previous Release
+
+### Query Profiler & Diagnostics
+- **13-Engine Query Profiler & Dialect Registry:** Added a modular `QueryProfilerDialect` architecture (`QueryProfilerDialectRegistry` and `ProfilerDialectConstants`) with native execution-plan profiling across PostgreSQL, MySQL/MariaDB, SQLite, DuckDB, Microsoft SQL Server, Oracle, ClickHouse, MongoDB, Redis, Cassandra/ScyllaDB, PlanetScale, CockroachDB, and YugabyteDB.
+- **Saved Query Plans & Profiler UI:** Upgraded `ChatProfilerPane`, `QueryProfilerDialog`, `CustomSqlInputCard`, and `RecentSessionsTable` to support saved execution plans, custom SQL profiling, and clearer diagnostic output.
+
+### Pool Routing, Packaging & Security
+- **Pooled Connection Routing & Server Pool Discovery:** Enhanced `ConnectionPoolService` and `SessionPoolSyncService` with improved pooled routing and multi-engine server pool discovery (including Redis logical database discovery).
+- **Published `ttql` Package Integration:** Transitioned TableTalk from a local path dependency to the published `ttql` package on pub.dev.
+- **Keychain Credential Leak Fix & Test Coverage:** Hardened `CredentialMigrationService`, `ChatRepository`, and `SessionController` to strip legacy plaintext connection strings from local SQLite chat session records after OS keychain migration, and added dedicated test suites for server connection pool discovery, keychain migration, and multi-engine query profiling.
+
+---
+
+## [v1.2.8] — Previous Release
 
 ### Fixed & Hardened
 - **Non-Blocking Startup DB Pool Sync:** Decoupled active session database/pool synchronization from the initial app splash screen in `AppState` and parallelized `SessionPoolSyncService` connection attachment with a 6-second per-engine timeout so unreachable/stopped databases never stall app launch.
