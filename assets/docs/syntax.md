@@ -1,28 +1,28 @@
-# ⚡ TTQL Developer Syntax Guide
+# TTQL Developer Syntax Guide
 ### The Modern, Fluent Federated Query Language
 
-Welcome to the **TableTalk Query Language (TTQL)** developer syntax guide. TTQL allows you to run single-script, read-only analytical queries across completely different databases (PostgreSQL, MySQL, MongoDB, Redis, SQLite, DuckDB, etc.) with zero glue code.
+Welcome to the **TableTalk Query Language (TTQL)** developer syntax guide. TTQL allows you to run single-script, read-only analytical queries across disparate databases (PostgreSQL, MySQL, MongoDB, Redis, SQLite, DuckDB, Microsoft SQL Server, ClickHouse, Oracle, Cassandra / ScyllaDB, and more) with zero glue code.
 
 ---
 
-## 📑 Table of Contents
-1. [⚡ 30-Second Cheat Sheet](#-30-second-cheat-sheet)
-2. [🧩 Anatomy of a TTQL Pipeline](#-anatomy-of-a-ttql-pipeline)
-3. [🌐 Environment & Constants](#-environment--constants)
-4. [📍 Data Sources (`from`, `.as`)](#-data-sources-from-as)
-5. [📋 Projections (`.select`)](#-projections-select)
-6. [🔍 Filtering (`.where`)](#-filtering-where)
-7. [🤝 Cross-Database Joins (`.innerJoin`, etc.)](#-cross-database-joins)
-8. [📊 Grouping & Built-in Aggregations (`.groupBy`)](#-grouping--built-in-aggregations)
-9. [🎛️ Post-Aggregation Filtering (`.having`)](#-post-aggregation-filtering-having)
-10. [↕️ Sorting & Ordering (`.orderBy`)](#-sorting--ordering-orderby)
-11. [📑 Pagination (`.limit`, `.offset`, `.skip`)](#-pagination-limit-offset-skip)
-12. [💡 Pro Tips & Common Gotchas](#-pro-tips--common-gotchas)
-13. [🍳 Ready-to-Use Recipes](#-ready-to-use-recipes)
+## Table of Contents
+1. [30-Second Cheat Sheet](#30-second-cheat-sheet)
+2. [Anatomy of a TTQL Pipeline](#anatomy-of-a-ttql-pipeline)
+3. [Environment & Constants](#environment--constants)
+4. [Data Sources (`from`, `.as`)](#data-sources-from-as)
+5. [Projections (`.select`)](#projections-select)
+6. [Filtering (`.where`)](#filtering-where)
+7. [Cross-Database Joins (`.innerJoin`, etc.)](#cross-database-joins)
+8. [Grouping & Built-in Aggregations (`.groupBy`)](#grouping--built-in-aggregations)
+9. [Post-Aggregation Filtering (`.having`)](#post-aggregation-filtering-having)
+10. [Sorting & Ordering (`.orderBy`)](#sorting--ordering-orderby)
+11. [Pagination (`.limit`, `.offset`, `.skip`)](#pagination-limit-offset-skip)
+12. [Best Practices & Common Gotchas](#best-practices--common-gotchas)
+13. [Ready-to-Use Recipes](#ready-to-use-recipes)
 
 ---
 
-## ⚡ 30-Second Cheat Sheet
+## 30-Second Cheat Sheet
 
 ```ttql
 // 1. Declare connections & constants
@@ -50,7 +50,7 @@ from(pg.customers as c)
 
 ---
 
-## 🧩 Anatomy of a TTQL Pipeline
+## Anatomy of a TTQL Pipeline
 
 Every TTQL query is a chainable, type-safe pipeline that flows from top to bottom.
 
@@ -88,12 +88,12 @@ graph TD
 
 ---
 
-## 🌐 Environment & Constants
+## Environment & Constants
 
 Declare target databases and reusable script variables at the top of your file with `const`.
 
 ### Connection Descriptors
-Connections map directly to abstract names registered in your TableTalk configuration. Credentials and secrets are never in the script!
+Connections map directly to abstract names registered in your TableTalk configuration. Credentials and secrets are never stored in the script.
 
 ```ttql
 const pg = environment.connections.production_postgres;
@@ -125,7 +125,7 @@ from(pg.users)
 
 ---
 
-## 📍 Data Sources (`from`, `.as`)
+## Data Sources (`from`, `.as`)
 
 Every query starts with `from(...)`.
 
@@ -150,7 +150,7 @@ from(pg.tables['customers'] as c)
 
 ---
 
-## 📋 Projections (`.select`)
+## Projections (`.select`)
 
 Controls which fields appear in your final output.
 
@@ -188,7 +188,7 @@ from(pg.customers)
 
 ---
 
-## 🔍 Filtering (`.where`)
+## Filtering (`.where`)
 
 TTQL compiles `.where(...)` expressions and automatically pushes them down to native database queries (e.g. `$1` SQL parameters or MongoDB MQL `$match` filters).
 
@@ -217,8 +217,7 @@ from(pg.orders as o)
   .where((o.status == 'shipped' || o.status == 'delivered') && o.total >= 100);
 ```
 
-> [!TIP]
-> Both developer symbols (`&&`, `||`, `!`) and SQL words (`AND`, `OR`, `NOT`) are fully supported. Use whichever style your team prefers!
+> **Tip:** Both developer symbols (`&&`, `||`, `!`) and SQL keywords (`AND`, `OR`, `NOT`) are supported.
 
 ### Table Qualifier Routing
 In joined queries, qualify fields with the table alias. TTQL routes each filter to its target engine automatically:
@@ -227,14 +226,14 @@ In joined queries, qualify fields with the table alias. TTQL routes each filter 
 from(pg.customers as c)
   .innerJoin(mysql.orders as o, on: c.id == o.customer_id)
   .where(c.country == 'US' && o.status == 'pending');
-  // ^ c.country pushes to Postgres, o.status pushes to MySQL!
+  // ^ c.country pushes to Postgres, o.status pushes to MySQL
 ```
 
 ---
 
-## 🤝 Cross-Database Joins
+## Cross-Database Joins
 
-Join tables residing in completely different database vendors.
+Join tables residing in different database engines.
 
 ```
 PostgreSQL (customers)   ──┐
@@ -264,8 +263,7 @@ from(pg.customers as c)
   .innerJoin(mysql.orders as o, on: c.id == o.client_id);
 ```
 
-> [!NOTE]
-> Operand orientation is automatic. Writing `c.id == o.client_id` or `o.client_id == c.id` works identically.
+> **Note:** Operand orientation is automatic. Writing `c.id == o.client_id` or `o.client_id == c.id` works identically.
 
 ### 3. Multi-Engine Chaining (3+ Databases)
 ```ttql
@@ -277,7 +275,7 @@ from(pg.customers as c)
 
 ---
 
-## 📊 Grouping & Built-in Aggregations
+## Grouping & Built-in Aggregations
 
 Compute metrics across row partitions using `.groupBy()` and aggregate functions.
 
@@ -318,7 +316,7 @@ from(pg.sales as s)
 
 ---
 
-## 🎛️ Post-Aggregation Filtering (`.having`)
+## Post-Aggregation Filtering (`.having`)
 
 Use `.having(...)` to filter aggregate metrics *after* they are calculated.
 
@@ -334,12 +332,11 @@ from(pg.orders as o)
   .having(total_orders >= 5 && lifetime_spend >= 1000.00); // Post-filter groups
 ```
 
-> [!IMPORTANT]
-> Use `.where()` for filtering individual database rows before aggregation (saves network bandwidth!). Use `.having()` strictly for filtering computed metrics like `count()` and `sum()`.
+> **Important:** Use `.where()` for filtering individual database rows before aggregation to minimize data transfer. Use `.having()` strictly for filtering computed metrics like `count()` and `sum()`.
 
 ---
 
-## ↕️ Sorting & Ordering (`.orderBy`)
+## Sorting & Ordering (`.orderBy`)
 
 Sort your result set in ascending (`ASC`) or descending (`DESC`) order.
 
@@ -370,12 +367,12 @@ from(pg.orders as o)
     o.customer_id,
     sum(o.amount) as total_spent
   ])
-  .orderBy(total_spent, 'DESC'); // Orders by computed alias!
+  .orderBy(total_spent, 'DESC'); // Orders by computed alias
 ```
 
 ---
 
-## 📑 Pagination (`.limit`, `.offset`, `.skip`)
+## Pagination (`.limit`, `.offset`, `.skip`)
 
 TTQL provides deterministic pagination executed directly in the ephemeral SQLite staging database.
 
@@ -386,8 +383,7 @@ from(pg.audit_events as a)
   .offset(50);   // Skip first 50 rows (Page 3)
 ```
 
-> [!TIP]
-> Both `.offset(n)` and `.skip(n)` are supported and interchangeable.
+> **Tip:** Both `.offset(n)` and `.skip(n)` are supported and interchangeable.
 
 ### Parameterized Pagination with Constants
 ```ttql
@@ -403,7 +399,7 @@ from(pg.customers)
 
 ---
 
-## 💡 Pro Tips & Common Gotchas
+## Best Practices & Common Gotchas
 
 ### 1. Read-Only Invariant
 TTQL is strictly an analytical engine. Attempting to run mutations (`INSERT`, `UPDATE`, `DELETE`, `DROP`, `ALTER`, `TRUNCATE`) will immediately fail compilation with a `TtqlSecurityException`.
@@ -411,7 +407,7 @@ TTQL is strictly an analytical engine. Attempting to run mutations (`INSERT`, `U
 ### 2. Disambiguate Column Names
 When joining tables that share identical column names (like `id` or `created_at`), qualify them in your `.select()` or `.where()` clauses using their table alias:
 ```ttql
-// Good: Disambiguated
+// Recommended: Disambiguated
 c.id as customer_id, o.id as order_id
 
 // Avoid: Ambiguous
@@ -419,11 +415,11 @@ id, id
 ```
 
 ### 3. Push Down Early
-Filter rows in `.where()` rather than post-processing. TTQL automatically pushes `.where()` filters into the native SQL/MQL queries sent to Postgres, MySQL, or Mongo, minimizing network transfer.
+Filter rows in `.where()` rather than post-processing. TTQL automatically pushes `.where()` filters into the native SQL/MQL queries sent to Postgres, MySQL, or MongoDB, minimizing network transfer.
 
 ---
 
-## 🍳 Ready-to-Use Recipes
+## Ready-to-Use Recipes
 
 ### Recipe 1: Cross-Engine Customer Order Summary (Postgres + MySQL)
 ```ttql

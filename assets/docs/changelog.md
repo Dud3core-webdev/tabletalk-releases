@@ -4,7 +4,14 @@ All notable changes, architectural milestones, and engine updates for TableTalk 
 
 ---
 
-## [v1.2.10] — Current Release
+## [v1.2.11] — Current Release
+
+### Fixed & Hardened
+- **Non-Blocking DB Pool Connection Recovery:** Updated `ConnectionRecoveryDialog` to connect pool databases concurrently with a 6-second per-connection timeout, added always-available **Cancel**, **Retry Failed**, and **Continue Offline** controls, and guarded against stale post-cancel async callbacks so unreachable database pools never hang or lock out the application.
+
+---
+
+## [v1.2.10] — Previous Release
 
 ### Dependencies & Compatibility
 - **TTQL `^1.0.3` Upgrade:** Updated the `ttql` query engine dependency from `^1.0.2` to `^1.0.3`, bringing full `sqlite3` `2.x` and `3.x` compatibility and a 160/160 pub.dev package score.

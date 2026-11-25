@@ -1,0 +1,1 @@
+var e=class{static repository="https://github.com/Dud3core-webdev/tabletalk-releases/tree/main";static windowsRelease="https://github.com/Dud3core-webdev/tabletalk-releases/releases/latest/download/TableTalkSetup.exe";static issues="https://github.com/Dud3core-webdev/tabletalk-releases/issues";static localManifestEndpoint="version.json"};export{e as a};
